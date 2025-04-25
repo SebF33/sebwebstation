@@ -16,7 +16,8 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^6.8.1",
-    "three": "^0.175.0"
+    "three": "^0.175.0",
+    "video.js": "^8.22.0"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",

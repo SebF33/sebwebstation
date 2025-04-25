@@ -22,7 +22,7 @@ Créer une vitrine exposant les travaux personnels en développement web.
 
 **Langage :** JavaScript.
 
-[![React](/.github/React.png)](https://fr.react.dev) [![Vite](/.github/Vite.png)](https://vitejs.dev) [![Tailwind CSS](/.github/Tailwind_CSS.png)](https://tailwindcss.com) [![Three.js](/.github/Three.js.png)](https://threejs.org) [![Motion](/.github/Motion.png)](https://motion.dev)
+[![React](/.github/React.png)](https://fr.react.dev) [![Vite](/.github/Vite.png)](https://vitejs.dev) [![Tailwind CSS](/.github/Tailwind_CSS.png)](https://tailwindcss.com) [![Three.js](/.github/Three.js.png)](https://threejs.org) [![Motion](/.github/Motion.png)](https://motion.dev) [![Video.js](/.github/Video.js.png)](https://videojs.com)
 
 :toolbox: **Technologies :**
 - [React](https://fr.react.dev/learn)
@@ -30,6 +30,7 @@ Créer une vitrine exposant les travaux personnels en développement web.
 - [Tailwind CSS](https://tailwindcss.com/docs/guides/vite)
 - [Three.js](https://threejs.org/manual/#en/installation)
 - [Motion](https://motion.dev/docs)
+- [Video.js](https://videojs.com/getting-started)
 
 
 <p align="center">

@@ -1,8 +1,11 @@
 node_modules
+desktop.ini
 dist
 dist-ssr
 public/fonts/*
+public/img/*
 public/models/*
+public/videos/*
 *.local
 
 # Editor directories and files
