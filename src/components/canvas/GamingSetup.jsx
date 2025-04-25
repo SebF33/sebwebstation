@@ -1,20 +1,32 @@
+// src/components/canvas/GamingSetup.jsx
 import React, { useEffect, useRef } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
-import { useThree, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-const GamingSetup = ({ isMobile, setHudOpen }) => {
+const GamingSetup = ({ isMobile, setHud1Open, setHud2Open, setHud3Open }) => {
   const { scene } = useGLTF("./models/gaming_setup/scene.gltf");
-
-  const screenRef = useRef();
-  const { camera, raycaster } = useThree();
+  const screenRef1 = useRef();
+  const screenRef2 = useRef();
+  const screenRef3 = useRef();
+  const { camera, gl, raycaster } = useThree();
   const mouse = useRef(new THREE.Vector2());
+  const hovered = useRef(false);
 
-  // Récupérer le mesh
+  // Trouver les meshes
   useEffect(() => {
     scene.traverse((child) => {
       if (child.isMesh && child.name === "Cube011_screen001_0") {
-        screenRef.current = child;
+        screenRef1.current = child;
+      }
+      if (child.isMesh && child.name === "Object_6_Screen001_0") {
+        screenRef2.current = child;
+      }
+      if (
+        child.isMesh &&
+        child.name === "Cube003_Material001_0_Material074_30001_0"
+      ) {
+        screenRef3.current = child;
       }
     });
   }, [scene]);
@@ -29,15 +41,44 @@ const GamingSetup = ({ isMobile, setHudOpen }) => {
     return () => window.removeEventListener("mousemove", onMouseMove);
   }, []);
 
-  // Raycasting pour ouvrir le HUD
+  // Raycasting pour ouvrir les HUDs
   useFrame(() => {
-    if (!screenRef.current) return;
-
     raycaster.setFromCamera(mouse.current, camera);
-    const intersects = raycaster.intersectObject(screenRef.current);
 
-    if (intersects.length > 0) {
-      setHudOpen(true);
+    const intersectsAny = [screenRef1, screenRef2, screenRef3].some(
+      (ref) => ref.current && raycaster.intersectObject(ref.current).length > 0
+    );
+
+    // hover
+    if (intersectsAny && !hovered.current) {
+      gl.domElement.style.cursor = "crosshair";
+      hovered.current = true;
+    }
+    if (!intersectsAny && hovered.current) {
+      gl.domElement.style.cursor = "auto";
+      hovered.current = false;
+    }
+
+    // HUD 1
+    if (
+      screenRef1.current &&
+      raycaster.intersectObject(screenRef1.current).length > 0
+    ) {
+      setHud1Open();
+    }
+    // HUD 2
+    if (
+      screenRef2.current &&
+      raycaster.intersectObject(screenRef2.current).length > 0
+    ) {
+      setHud2Open();
+    }
+    // HUD 3
+    if (
+      screenRef3.current &&
+      raycaster.intersectObject(screenRef3.current).length > 0
+    ) {
+      setHud3Open();
     }
   });
 
