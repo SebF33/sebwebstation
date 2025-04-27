@@ -1,4 +1,4 @@
-# PROJET AVEC FRAMEWORK & MODÈLES 3D
+# PROJET AVEC MODÈLES 3D
 ![logo_sebwebstation](/.github/logo_sebwebstation.png)
 
 **Titre : SebWebStation**
