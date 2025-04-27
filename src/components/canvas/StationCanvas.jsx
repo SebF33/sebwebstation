@@ -213,10 +213,14 @@ const StationCanvas = () => {
     fetch("https://api.github.com/users/sebf33/repos")
       .then((res) => res.json())
       .then((data) => {
-        // tri par date de dernier push
-        const sorted = data
-          .filter((r) => !r.archived)
-          .sort((a, b) => new Date(b.pushed_at) - new Date(a.pushed_at));
+        // on retire les archivés
+        const active = data.filter((r) => !r.archived);
+        // on retire le repo "sebf33"
+        const withoutSelf = active.filter((r) => r.name !== "sebf33");
+        // on trie par date de dernier push
+        const sorted = withoutSelf.sort(
+          (a, b) => new Date(b.pushed_at) - new Date(a.pushed_at)
+        );
         setRepos(sorted);
       })
       .catch((err) => console.error(err));
