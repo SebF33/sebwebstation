@@ -219,10 +219,33 @@
 /* Technologies */
 .tech-list {
   display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.tech-group {
+  padding: 0.5rem 0;
+}
+
+.tech-group-title {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.tech-group-items {
+  display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 1rem;
-  margin-top: 1rem;
+}
+
+.tech-separator {
+  height: 1px;
+  background-color: #0ff;
+  margin: 0.5rem 0;
 }
 
 .tech-item {
@@ -241,4 +264,5 @@
 
 .tech-label {
   font-size: 0.75rem;
+  text-align: center;
 }

@@ -29,6 +29,7 @@ import { technologies } from "../../utils/constants";
 
 import CanvasLoader from "./CanvasLoader";
 import GamingSetup from "./GamingSetup";
+import TechList from "../TechList";
 import VideoPlayer from "../VideoPlayer";
 
 /**
@@ -552,18 +553,7 @@ const StationCanvas = () => {
                 >
                   Jugez les technologies déjà utilisées...
                 </motion.p>
-                <div className="tech-list">
-                  {technologies.map((tech) => (
-                    <div key={tech.name} className="tech-item">
-                      <img
-                        src={tech.icon}
-                        alt={tech.name}
-                        className="tech-icon"
-                      />
-                      <p className="tech-label">{tech.name}</p>
-                    </div>
-                  ))}
-                </div>
+                <TechList technologies={technologies} />
               </motion.div>
             </Html>
           )}
