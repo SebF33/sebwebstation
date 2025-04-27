@@ -28,6 +28,33 @@ export const technologies = [
     category: "runtime"
   },
 
+  // SGBD
+  {
+    name: "PostgreSQL",
+    icon: "./img/postgresql.png",
+    category: "sgbd"
+  },
+  {
+    name: "SQL Server",
+    icon: "./img/sqlserver.png",
+    category: "sgbd"
+  },
+  {
+    name: "Oracle Database",
+    icon: "./img/oracledb.png",
+    category: "sgbd"
+  },
+  {
+    name: "MariaDB",
+    icon: "./img/mariadb.png",
+    category: "sgbd"
+  },
+  {
+    name: "MySQL",
+    icon: "./img/mysql.png",
+    category: "sgbd"
+  },
+
   // Frameworks
   {
     name: "Symfony",

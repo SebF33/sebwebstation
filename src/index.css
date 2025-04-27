@@ -266,3 +266,30 @@
   font-size: 0.75rem;
   text-align: center;
 }
+
+.tech-image-wrapper {
+  position: relative;
+  width: 60px;
+  height: 60px;
+}
+
+.tech-icon-loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 24px;
+  height: 24px;
+  margin: -12px 0 0 -12px;
+  border: 3px solid var(--color-lighter-sith);
+  border-top-color: var(--color-sith);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.tech-icon.hidden {
+  opacity: 0;
+}
+
+.tech-icon.visible {
+  opacity: 1;
+}

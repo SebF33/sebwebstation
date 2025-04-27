@@ -1,9 +1,26 @@
 // src/components/TechList.jsx
-import React from "react";
+import React, { useState } from "react";
+
+// Chargement des images
+function ImageWithLoader({ src, alt, className }) {
+  const [loaded, setLoaded] = useState(false);
+  return (
+    <div className="tech-image-wrapper">
+      {!loaded && <div className="tech-icon-loader"></div>}
+      <img
+        src={src}
+        alt={alt}
+        className={`${className} ${loaded ? "visible" : "hidden"}`}
+        onLoad={() => setLoaded(true)}
+      />
+    </div>
+  );
+}
 
 export default function TechList({ technologies }) {
   const languages = technologies.filter((t) => t.category === "language");
   const runtimes = technologies.filter((t) => t.category === "runtime");
+  const sgbds = technologies.filter((t) => t.category === "sgbd");
   const frameworks = technologies.filter((t) => t.category === "framework");
   const libraries = technologies.filter((t) => t.category === "library");
 
@@ -13,8 +30,7 @@ export default function TechList({ technologies }) {
       <div className="tech-group-items">
         {items.map((tech) => (
           <div key={tech.name} className="tech-item">
-            <img
-              loading="lazy"
+            <ImageWithLoader
               src={tech.icon}
               alt={tech.name}
               className="tech-icon"
@@ -31,6 +47,8 @@ export default function TechList({ technologies }) {
       {renderGroup(languages, "Langages")}
       <div className="tech-separator" />
       {renderGroup(runtimes, "Environnements d'exécution")}
+      <div className="tech-separator" />
+      {renderGroup(sgbds, "SGBD")}
       <div className="tech-separator" />
       {renderGroup(frameworks, "Frameworks")}
       <div className="tech-separator" />
