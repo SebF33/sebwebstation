@@ -88,4 +88,9 @@ export const technologies = [
     icon: "./img/tailwindcss.png",
     category: "library"
   },
+  {
+    name: "Bootstrap",
+    icon: "./img/bootstrap.png",
+    category: "library"
+  },
 ];
