@@ -7,8 +7,7 @@
 npm run build
 
 # commit
-git checkout -b gh-pages
-git add -A
+git add -f dist
 git commit -m 'deploy'
 
 # subtree push
