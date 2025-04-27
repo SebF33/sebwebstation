@@ -4,5 +4,6 @@ import {
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
+  base: '/sebwebstation/',
   plugins: [react()],
 })
