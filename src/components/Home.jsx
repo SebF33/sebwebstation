@@ -25,10 +25,14 @@ const Home = () => {
             <span className="sw-font text-lighter-sith">Sébastien</span>
           </h1>
           <p
-            className={`${styles.subText} mt-2 text-white max-w-xl text-base leading-relaxed`}
+            className={`${styles.subText} mt-2 text-white max-w-2xl text-base leading-relaxed`}
           >
-            HTML, CSS, JavaScript, PHP &amp; MySQL : les 5 piliers sur lesquels
-            s'appuient mes travaux.
+            <span className="text-[#E44D26]">HTML</span>,{" "}
+            <span className="text-[#1572B6]">CSS</span>,{" "}
+            <span className="text-[#FFDA3E]">JavaScript</span>,{" "}
+            <span className="text-[#7E93D1]">PHP</span> &amp;{" "}
+            <span className="text-[#00758F]">MySQL</span> : les 5 piliers sur
+            lesquels s'appuient mes travaux.
           </p>
         </div>
       </div>
