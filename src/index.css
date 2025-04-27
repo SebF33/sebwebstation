@@ -14,6 +14,7 @@
   --color-lighter-jedi: #339CFF;
   --color-sith: #9E1313;
   --color-lighter-sith: #FF1A1A;
+  --color-lightest-sith: #FFCCCC;
   --color-bg: rgba(0, 0, 20, 0.85);
 }
 
@@ -64,11 +65,26 @@
   padding: 1.5rem;
   border-radius: 16px;
   text-align: center;
-  color: #ffcccc;
+  color: var(--color-lightest-sith);
   background: var(--color-bg);
   backdrop-filter: blur(4px);
   overflow-y: auto;
   pointer-events: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-lightest-sith) #333;
+}
+
+.hud-popup::-webkit-scrollbar {
+  width: 8px;
+}
+
+.hud-popup::-webkit-scrollbar-track {
+  background: #333;
+}
+
+.hud-popup::-webkit-scrollbar-thumb {
+  background-color: var(--color-lightest-sith);
+  border-radius: 10px;
 }
 
 .hud-popup--laptop {
@@ -149,6 +165,7 @@
   display: inline-block;
   overflow: hidden;
   white-space: nowrap;
+  font-size: clamp(10px, 1vw, 24px);
   border-right: 2px solid var(--color-lighter-jedi);
   animation:
     typing 2.5s steps(30) forwards,

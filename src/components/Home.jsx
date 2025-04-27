@@ -20,12 +20,12 @@ const Home = () => {
           />
         </div>
         <div>
-          <h1 className={`${styles.headText} sw-font text-white`}>
+          <h1 className={`${styles.headText} sw-font text-white leading-10`}>
             Salut, je suis{" "}
             <span className="sw-font text-lighter-sith">Sébastien</span>
           </h1>
           <p
-            className={`${styles.subText} mt-2 text-white max-w-2xl text-base leading-relaxed`}
+            className={`${styles.subText} mt-2 text-white max-w-2xl text-base leading-6`}
           >
             <span className="text-[#E44D26]">HTML</span>,{" "}
             <span className="text-[#1572B6]">CSS</span>,{" "}
