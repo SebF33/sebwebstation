@@ -1,12 +1,21 @@
 // src/components/canvas/StationCanvas.jsx
-import React, { Suspense, useEffect, useState } from "react";
-import { Canvas } from "@react-three/fiber";
+import React, {
+  Suspense,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
   ContactShadows,
   Html,
   OrbitControls,
   Preload,
+  Sparkles,
   Stars,
+  useGLTF,
 } from "@react-three/drei";
 import {
   Bloom,
@@ -14,12 +23,182 @@ import {
   EffectComposer,
   Noise,
 } from "@react-three/postprocessing";
+import { MathUtils, Quaternion, Vector3 } from "three";
 import { motion, AnimatePresence } from "motion/react";
 import { technologies } from "../../utils/constants";
 
 import CanvasLoader from "./CanvasLoader";
 import GamingSetup from "./GamingSetup";
 import VideoPlayer from "../VideoPlayer";
+
+/**
+ * Calcule les 4 coins du viewport à une distance donnée de la caméra
+ * @param {Camera} camera - Caméra de la scène
+ * @param {number} distance - Distance le long du rayon de projection (par défaut 100)
+ * @returns {Vector3[]} - Positions world des coins [bas-gauche, haut-gauche, haut-droite, bas-droite]
+ */
+function computeCorners(camera, distance = 100) {
+  const camPos = camera.position.clone();
+  const ndc = [
+    new Vector3(-1, -1, -1), // bas-gauche du near plane
+    new Vector3(-1, 1, -1), // haut-gauche du near plane
+    new Vector3(1, 1, -1), // haut-droite du near plane
+    new Vector3(1, -1, -1), // bas-droite du near plane
+  ];
+  return ndc.map((n) => {
+    // unproject sur le near plane
+    const worldPoint = n.clone().unproject(camera);
+    // vecteur depuis la caméra vers le point
+    const dir = worldPoint.sub(camPos).normalize();
+    // position à la distance donnée sur ce vecteur
+    return camPos.clone().addScaledVector(dir, distance);
+  });
+}
+
+/**
+ * SpaceFighter
+ * - anime un vaisseau entre deux coins opposés aléatoires
+ * - délai initial et avant chaque respawn
+ */
+function SpaceFighter({ modelPath, speed, scale, delay, corners }) {
+  const gltf = useGLTF(modelPath);
+  const mesh = useRef();
+
+  // trajectoire
+  const spawn = useRef(new Vector3());
+  const target = useRef(new Vector3());
+  const dir = useRef(new Vector3());
+  const dist = useRef(0);
+  const quat = useRef(new Quaternion());
+  const traveled = useRef(0);
+  const respawnTO = useRef();
+  const [visible, setVisible] = useState(false);
+
+  // sélection aléatoire de coins opposés
+  const pickCorners = () => {
+    const idx = MathUtils.randInt(0, corners.length - 1);
+    return {
+      spawn: corners[idx].clone(),
+      target: corners[(idx + 2) % corners.length].clone(),
+    };
+  };
+
+  // initialise trajectoire + position et orientation du mesh
+  const initTrajectory = () => {
+    const pts = pickCorners();
+    spawn.current.copy(pts.spawn);
+    target.current.copy(pts.target);
+    dir.current.copy(pts.target).sub(pts.spawn).normalize();
+    dist.current = pts.spawn.distanceTo(pts.target);
+    quat.current.setFromUnitVectors(new Vector3(0, 0, 1), dir.current);
+    // position et orientation initiale avant affichage
+    if (mesh.current) {
+      mesh.current.position.copy(spawn.current);
+      mesh.current.quaternion.copy(quat.current);
+    }
+    traveled.current = 0;
+  };
+
+  // planifie respawn : cache, attend, ré-init, ré-affiche
+  const scheduleRespawn = () => {
+    setVisible(false);
+    respawnTO.current = setTimeout(() => {
+      initTrajectory();
+      setVisible(true);
+    }, delay * 1000);
+  };
+
+  // au montage
+  useLayoutEffect(() => {
+    initTrajectory();
+    // délai avant première apparition
+    const id = setTimeout(() => setVisible(true), delay * 1000);
+    return () => {
+      clearTimeout(id);
+      clearTimeout(respawnTO.current);
+    };
+  }, [delay, corners]);
+
+  // animation : déplacement et trigger respawn
+  useFrame((_, delta) => {
+    if (!visible || !mesh.current) return;
+    const step = speed * delta;
+    mesh.current.position.addScaledVector(dir.current, step);
+    traveled.current += step;
+    mesh.current.quaternion.copy(quat.current);
+    if (traveled.current >= dist.current) scheduleRespawn();
+  });
+
+  // rendu : mesh toujours monté, visibilité gérée via prop
+  return (
+    <primitive
+      ref={mesh}
+      object={gltf.scene.clone()}
+      scale={scale}
+      dispose={null}
+      visible={visible}
+    />
+  );
+}
+
+/**
+ * SpaceSceneContent
+ * - calcule les coins du viewport
+ * - rend fond d'étoiles et fighters
+ */
+function SpaceSceneContent({ configs }) {
+  const camera = useThree((state) => state.camera);
+  // recalculer uniquement si la caméra change
+  const corners = useMemo(() => computeCorners(camera, 100), [camera]);
+
+  return (
+    <>
+      {/* Fond étoilé */}
+      <Stars
+        count={10000}
+        depth={300}
+        factor={10}
+        fade
+        radius={250}
+        speed={0.02}
+        saturation={0}
+      />
+      <Stars
+        count={5000}
+        depth={200}
+        factor={5}
+        fade
+        radius={200}
+        speed={0.05}
+        saturation={0.3}
+      />
+      <Stars
+        count={2000}
+        depth={100}
+        factor={2}
+        fade
+        radius={150}
+        speed={0.1}
+        saturation={0.6}
+      />
+      <Sparkles
+        count={500}
+        size={1.5}
+        scale={[200, 200, 200]}
+        speed={0.5}
+        noise={0.2}
+        position={[0, 0, 0]}
+      />
+      {/* Fighter pour chaque config */}
+      {configs.map((cfg, i) => (
+        <SpaceFighter key={i} {...cfg} corners={corners} />
+      ))}
+    </>
+  );
+}
+
+// Éviter les rerenders inutiles
+const Space = React.memo(SpaceSceneContent);
 
 const StationCanvas = () => {
   const [hud1Open, setHud1Open] = useState(false);
@@ -71,6 +250,25 @@ const StationCanvas = () => {
     setHud3Open(true);
   };
 
+  // Config des fighters
+  const fightersConfig = useMemo(
+    () => [
+      {
+        modelPath: "./models/tie_fighter/scene.gltf",
+        speed: 10,
+        scale: 0.003,
+        delay: MathUtils.randFloat(2, 8),
+      },
+      {
+        modelPath: "./models/x-wing/scene.gltf",
+        speed: 9,
+        scale: 0.02,
+        delay: MathUtils.randFloat(3, 11),
+      },
+    ],
+    []
+  );
+
   return (
     <Canvas
       frameloop="always"
@@ -80,17 +278,10 @@ const StationCanvas = () => {
       gl={{ preserveDrawingBuffer: true }}
     >
       <Suspense fallback={<CanvasLoader />}>
-        <Stars
-          count={12000}
-          depth={150}
-          factor={4}
-          fade
-          radius={200}
-          speed={0.2}
-        />
+        <Space configs={fightersConfig} />
         <OrbitControls
           autoRotate
-          autoRotateSpeed={0.15}
+          autoRotateSpeed={0.1}
           enablePan={false}
           enableZoom={true}
           maxPolarAngle={Math.PI / 2}
