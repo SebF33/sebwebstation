@@ -33,6 +33,13 @@ Créer une vitrine exposant les travaux personnels en développement web.
 - [Video.js](https://videojs.com/getting-started)
 
 
+## :copyright: Copyright
+Ce travail s'appuie sur :
+- "Gaming setup" (https://sketchfab.com/3d-models/gaming-setup-6ba24900db4e4031a1d263cd324fead8) par Hamza_Tariq (https://sketchfab.com/Hamza_Tariq) sous licence CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/).
+- "TIE Fighter" (https://sketchfab.com/3d-models/tie-fighter-c306f5183f364176912d782b19474781) par StarWars-Universe (https://sketchfab.com/SWU) sous licence CC-BY-NC-SA-4.0 (http://creativecommons.org/licenses/by-nc-sa/4.0/).
+- "X-Wing" (https://sketchfab.com/3d-models/x-wing-6fdd3b18c4b245bf9eba1fd32611496a) par StarWars-Universe (https://sketchfab.com/SWU) sous licence CC-BY-NC-SA-4.0 (http://creativecommons.org/licenses/by-nc-sa/4.0/).
+
+
 <p align="center">
   <img align="center" width="100" src="https://raw.githubusercontent.com/sebf33/sebf33/master/assets/avatar.png" />
 </p>
