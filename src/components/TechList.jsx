@@ -30,11 +30,18 @@ export default function TechList({ technologies }) {
       <div className="tech-group-items">
         {items.map((tech) => (
           <div key={tech.name} className="tech-item">
-            <ImageWithLoader
-              src={tech.icon}
-              alt={tech.name}
-              className="tech-icon"
-            />
+            <a
+              href={tech.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              title={`Visiter le site de ${tech.name}`}
+            >
+              <ImageWithLoader
+                src={tech.icon}
+                alt={tech.name}
+                className="tech-icon"
+              />
+            </a>
             <p className="tech-label">{tech.name}</p>
           </div>
         ))}
