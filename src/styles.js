@@ -1,5 +1,5 @@
 const styles = {
-  headText: "font-black text-white lg:text-[60px] sm:text-[40px] xs:text-[40px] text-[30px] lg:leading-[78px] mt-2",
+  headText: "font-black text-white text-[28px] sm:text-[36px] md:text-[48px] lg:text-[60px] leading-tight lg:leading-[78px] mt-5 md:mt-3",
   padding: "sm:px-16 px-6 sm:py-16 py-10",
   paddingX: "sm:px-16 px-6",
   paddingY: "sm:py-16 py-6",

@@ -8,12 +8,12 @@ const Home = () => {
   return (
     <section className="relative w-full h-screen mx-auto overflow-hidden">
       <div
-        className={`absolute inset-0 top-[120px] max-w-7xl mx-auto ${styles.paddingX} flex flex-row items-start gap-5`}
+        className={`absolute inset-0 top-[60px] md:top-[120px] max-w-7xl mx-auto ${styles.paddingX} flex flex-row items-start gap-5`}
       >
         <div className="flex flex-col justify-center items-center mt-5">
           <div className="w-5 h-5 rounded-full bg-lighter-sith" />
           <div
-            className="w-1 sm:h-80 h-40
+            className="w-1 sm:h-80 h-44
              bg-gradient-to-b
              from-lighter-sith
              to-lighter-jedi"
@@ -31,8 +31,8 @@ const Home = () => {
             <span className="text-[#1572B6]">CSS</span>,{" "}
             <span className="text-[#FFDA3E]">JavaScript</span>,{" "}
             <span className="text-[#7E93D1]">PHP</span> &amp;{" "}
-            <span className="text-[#00758F]">MySQL</span> : les 5 piliers sur
-            lesquels s'appuient mes travaux.
+            <span className="text-[#00758F]">MySQL</span> : découvre sur les
+            écrans mes travaux issus de ces 5 piliers fondateurs.
           </p>
         </div>
       </div>

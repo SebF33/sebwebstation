@@ -359,7 +359,7 @@ const StationCanvas = () => {
                     ease: "linear",
                   }}
                 >
-                  Regardez ma stack technique sur ma chaîne&nbsp;
+                  Observe ma stack technique sur ma chaîne&nbsp;
                   <a
                     href="https://www.youtube.com/@ifseb"
                     target="_blank"
@@ -424,7 +424,7 @@ const StationCanvas = () => {
                     ease: "linear",
                   }}
                 >
-                  Découvrez mes projets en vidéo ou sur&nbsp;
+                  Regarde mes projets en vidéo ou sur&nbsp;
                   <a
                     href="https://github.com/sebf33"
                     target="_blank"
@@ -555,7 +555,7 @@ const StationCanvas = () => {
                   animate={{ width: "100%" }}
                   transition={{ duration: 2.5, ease: "linear" }}
                 >
-                  Jugez les technologies déjà utilisées...
+                  Juge quelques technos utilisées...
                 </motion.p>
                 <TechList technologies={technologies} />
               </motion.div>
