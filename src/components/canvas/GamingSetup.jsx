@@ -1,7 +1,7 @@
 // src/components/canvas/GamingSetup.jsx
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useCursor, useGLTF } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
-import { useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 
 const GamingSetup = ({ isMobile, setHud1Open, setHud2Open, setHud3Open }) => {
@@ -11,22 +11,34 @@ const GamingSetup = ({ isMobile, setHud1Open, setHud2Open, setHud3Open }) => {
   const screenRef3 = useRef();
   const { camera, gl, raycaster } = useThree();
   const mouse = useRef(new THREE.Vector2());
-  const hovered = useRef(false);
+  const [hoveredMesh, setHoveredMesh] = useState(null);
+
+  // Changer le curseur au hover des meshes
+  useCursor(!!hoveredMesh, "crosshair", "auto");
 
   // Trouver les meshes
   useEffect(() => {
     scene.traverse((child) => {
-      if (child.isMesh && child.name === "Cube011_screen001_0") {
-        screenRef1.current = child;
+      if (!child.isMesh) return;
+      switch (child.name) {
+        case "Cube011_screen001_0":
+          screenRef1.current = child;
+          break;
+        case "Object_6_Screen001_0":
+          screenRef2.current = child;
+          break;
+        case "Cube003_Material001_0_Material074_30001_0":
+          screenRef3.current = child;
+          break;
+        default:
+          break;
       }
-      if (child.isMesh && child.name === "Object_6_Screen001_0") {
-        screenRef2.current = child;
-      }
-      if (
-        child.isMesh &&
-        child.name === "Cube003_Material001_0_Material074_30001_0"
-      ) {
-        screenRef3.current = child;
+      // ombres
+      child.castShadow = true;
+      child.receiveShadow = true;
+      // intensité emissive de base
+      if (child.material) {
+        child.material.emissiveIntensity = 0.4;
       }
     });
   }, [scene]);
@@ -41,45 +53,46 @@ const GamingSetup = ({ isMobile, setHud1Open, setHud2Open, setHud3Open }) => {
     return () => window.removeEventListener("mousemove", onMouseMove);
   }, []);
 
-  // Raycasting pour ouvrir les HUDs
+  // Ouvrir les HUDs au click
+  useEffect(() => {
+    const handleClick = () => {
+      raycaster.setFromCamera(mouse.current, camera);
+      const screens = [
+        screenRef1.current,
+        screenRef2.current,
+        screenRef3.current,
+      ].filter(Boolean);
+      const intersects = raycaster.intersectObjects(screens);
+      if (intersects.length === 0) return;
+      const mesh = intersects[0].object;
+      if (mesh === screenRef1.current) setHud1Open();
+      if (mesh === screenRef2.current) setHud2Open();
+      if (mesh === screenRef3.current) setHud3Open();
+    };
+    gl.domElement.addEventListener("click", handleClick);
+    return () => gl.domElement.removeEventListener("click", handleClick);
+  }, [camera, raycaster, gl, setHud1Open, setHud2Open, setHud3Open]);
+
+  // Gestion du hover et du glow
   useFrame(() => {
+    // mettre à jour depuis la caméra et la souris
     raycaster.setFromCamera(mouse.current, camera);
-
-    const intersectsAny = [screenRef1, screenRef2, screenRef3].some(
-      (ref) => ref.current && raycaster.intersectObject(ref.current).length > 0
-    );
-
+    const screens = [
+      screenRef1.current,
+      screenRef2.current,
+      screenRef3.current,
+    ].filter(Boolean);
+    const intersects = raycaster.intersectObjects(screens);
     // hover
-    if (intersectsAny && !hovered.current) {
-      gl.domElement.style.cursor = "crosshair";
-      hovered.current = true;
+    const newHovered = intersects.length > 0 ? intersects[0].object : null;
+    if (newHovered !== hoveredMesh) {
+      setHoveredMesh(newHovered);
     }
-    if (!intersectsAny && hovered.current) {
-      gl.domElement.style.cursor = "auto";
-      hovered.current = false;
-    }
-
-    // HUD 1
-    if (
-      screenRef1.current &&
-      raycaster.intersectObject(screenRef1.current).length > 0
-    ) {
-      setHud1Open();
-    }
-    // HUD 2
-    if (
-      screenRef2.current &&
-      raycaster.intersectObject(screenRef2.current).length > 0
-    ) {
-      setHud2Open();
-    }
-    // HUD 3
-    if (
-      screenRef3.current &&
-      raycaster.intersectObject(screenRef3.current).length > 0
-    ) {
-      setHud3Open();
-    }
+    // mettre à jour la lueur émissive
+    screens.forEach((mesh) => {
+      if (!mesh.material) return;
+      mesh.material.emissiveIntensity = mesh === newHovered ? 1 : 0.4;
+    });
   });
 
   return (
@@ -97,8 +110,8 @@ const GamingSetup = ({ isMobile, setHud1Open, setHud2Open, setHud3Open }) => {
       <pointLight position={[0, 5, 0]} intensity={0.3} color="#ffffff" />
       <primitive
         object={scene}
-        scale={isMobile ? 0.7 : 0.75}
-        position={isMobile ? [0, -3, -2.2] : [0, -3.25, -1.5]}
+        scale={isMobile ? 0.4 : 0.75}
+        position={isMobile ? [0, -3, -0.6] : [0, -3.25, -1.1]}
         rotation={[-0.01, -0.2, -0.1]}
         castShadow
         receiveShadow
