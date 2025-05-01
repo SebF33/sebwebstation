@@ -43,19 +43,44 @@ const GamingSetup = ({ isMobile, setHud1Open, setHud2Open, setHud3Open }) => {
     });
   }, [scene]);
 
-  // Capture la souris
+  // Capture la souris (pour desktop et mobile)
   useEffect(() => {
     const onMouseMove = (event) => {
       mouse.current.x = (event.clientX / window.innerWidth) * 2 - 1;
       mouse.current.y = -(event.clientY / window.innerHeight) * 2 + 1;
     };
+
+    const onTouchMove = (event) => {
+      event.preventDefault();
+      const touch = event.touches[0];
+      mouse.current.x = (touch.clientX / window.innerWidth) * 2 - 1;
+      mouse.current.y = -(touch.clientY / window.innerHeight) * 2 + 1;
+    };
+
     window.addEventListener("mousemove", onMouseMove);
-    return () => window.removeEventListener("mousemove", onMouseMove);
+    window.addEventListener("touchmove", onTouchMove, { passive: false });
+
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("touchmove", onTouchMove);
+    };
   }, []);
 
-  // Ouvrir les HUDs au click
+  // Ouvrir les HUDs au click ou touch
   useEffect(() => {
-    const handleClick = () => {
+    const handleInteraction = (event) => {
+      if (event.type === "touchstart") {
+        event.preventDefault();
+        const touch = event.touches[0];
+        mouse.current.x = (touch.clientX / window.innerWidth) * 2 - 1;
+        mouse.current.y = -(touch.clientY / window.innerHeight) * 2 + 1;
+      } else if (event.type === "click") {
+        const clientX = event.clientX;
+        const clientY = event.clientY;
+        mouse.current.x = (clientX / window.innerWidth) * 2 - 1;
+        mouse.current.y = -(clientY / window.innerHeight) * 2 + 1;
+      }
+
       raycaster.setFromCamera(mouse.current, camera);
       const screens = [
         screenRef1.current,
@@ -64,13 +89,22 @@ const GamingSetup = ({ isMobile, setHud1Open, setHud2Open, setHud3Open }) => {
       ].filter(Boolean);
       const intersects = raycaster.intersectObjects(screens);
       if (intersects.length === 0) return;
+
       const mesh = intersects[0].object;
       if (mesh === screenRef1.current) setHud1Open();
       if (mesh === screenRef2.current) setHud2Open();
       if (mesh === screenRef3.current) setHud3Open();
     };
-    gl.domElement.addEventListener("click", handleClick);
-    return () => gl.domElement.removeEventListener("click", handleClick);
+
+    gl.domElement.addEventListener("click", handleInteraction);
+    gl.domElement.addEventListener("touchstart", handleInteraction, {
+      passive: false,
+    });
+
+    return () => {
+      gl.domElement.removeEventListener("click", handleInteraction);
+      gl.domElement.removeEventListener("touchstart", handleInteraction);
+    };
   }, [camera, raycaster, gl, setHud1Open, setHud2Open, setHud3Open]);
 
   // Gestion du hover et du glow
