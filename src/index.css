@@ -69,6 +69,8 @@
   background: var(--color-bg);
   backdrop-filter: blur(4px);
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: auto;
   pointer-events: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--color-lightest-sith) #333;

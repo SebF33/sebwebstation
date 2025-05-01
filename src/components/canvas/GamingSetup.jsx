@@ -45,16 +45,20 @@ const GamingSetup = ({ isMobile, setHud1Open, setHud2Open, setHud3Open }) => {
 
   // Capture la souris (pour desktop et mobile)
   useEffect(() => {
+    const updateMouse = (clientX, clientY) => {
+      const rect = gl.domElement.getBoundingClientRect();
+      mouse.current.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.current.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+    };
+
     const onMouseMove = (event) => {
-      mouse.current.x = (event.clientX / window.innerWidth) * 2 - 1;
-      mouse.current.y = -(event.clientY / window.innerHeight) * 2 + 1;
+      updateMouse(event.clientX, event.clientY);
     };
 
     const onTouchMove = (event) => {
       event.preventDefault();
       const touch = event.touches[0];
-      mouse.current.x = (touch.clientX / window.innerWidth) * 2 - 1;
-      mouse.current.y = -(touch.clientY / window.innerHeight) * 2 + 1;
+      updateMouse(touch.clientX, touch.clientY);
     };
 
     window.addEventListener("mousemove", onMouseMove);
@@ -69,17 +73,19 @@ const GamingSetup = ({ isMobile, setHud1Open, setHud2Open, setHud3Open }) => {
   // Ouvrir les HUDs au click ou touch
   useEffect(() => {
     const handleInteraction = (event) => {
+      let clientX, clientY;
       if (event.type === "touchstart") {
         event.preventDefault();
         const touch = event.touches[0];
-        mouse.current.x = (touch.clientX / window.innerWidth) * 2 - 1;
-        mouse.current.y = -(touch.clientY / window.innerHeight) * 2 + 1;
-      } else if (event.type === "click") {
-        const clientX = event.clientX;
-        const clientY = event.clientY;
-        mouse.current.x = (clientX / window.innerWidth) * 2 - 1;
-        mouse.current.y = -(clientY / window.innerHeight) * 2 + 1;
+        clientX = touch.clientX;
+        clientY = touch.clientY;
+      } else {
+        clientX = event.clientX;
+        clientY = event.clientY;
       }
+      const rect = gl.domElement.getBoundingClientRect();
+      mouse.current.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.current.y = -((clientY - rect.top) / rect.height) * 2 + 1;
 
       raycaster.setFromCamera(mouse.current, camera);
       const screens = [
