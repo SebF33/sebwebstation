@@ -56,13 +56,12 @@ const GamingSetup = ({ isMobile, setHud1Open, setHud2Open, setHud3Open }) => {
     };
 
     const onTouchMove = (event) => {
-      event.preventDefault();
       const touch = event.touches[0];
       updateMouse(touch.clientX, touch.clientY);
     };
 
     window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("touchmove", onTouchMove, { passive: false });
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
 
     return () => {
       window.removeEventListener("mousemove", onMouseMove);
@@ -75,7 +74,6 @@ const GamingSetup = ({ isMobile, setHud1Open, setHud2Open, setHud3Open }) => {
     const handleInteraction = (event) => {
       let clientX, clientY;
       if (event.type === "touchstart") {
-        event.preventDefault();
         const touch = event.touches[0];
         clientX = touch.clientX;
         clientY = touch.clientY;
