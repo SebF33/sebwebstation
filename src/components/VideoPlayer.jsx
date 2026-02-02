@@ -3,6 +3,10 @@ import React, { useRef, useEffect } from "react";
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
 
+videojs.addLanguage("fr", {
+  "The media could not be loaded, either because the server or network failed or because the format is not supported.":"La vidéo n'est pas disponible.",
+});
+
 const VideoPlayer = ({ src, poster, options = {} }) => {
   const videoRef = useRef(null);
   const playerRef = useRef(null);
@@ -15,9 +19,9 @@ const VideoPlayer = ({ src, poster, options = {} }) => {
 
     // Options par défaut + override
     const videoJsOptions = {
+      language: "fr",
       controls: true,
       fluid: true,
-      notSupportedMessage: "La vidéo n'est pas disponible.",
       preload: "auto",
       sources: [{ src, type: "video/mp4" }],
       poster: poster || "",
