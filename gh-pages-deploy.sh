@@ -4,6 +4,7 @@
 # set -e
 
 # build
+git checkout master
 npm run build
 
 # commit
@@ -13,5 +14,5 @@ git commit -m 'deploy'
 # subtree push
 git subtree push --prefix dist origin gh-pages
 
-# return to master branch
-git checkout master
+# master branch push
+git push
